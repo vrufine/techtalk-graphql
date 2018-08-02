@@ -1,16 +1,9 @@
+const db = require('./db')
+
 const express = require('express')
 const expressGraphql = require('express-graphql')
 const app = express()
 const { makeExecutableSchema } = require('graphql-tools')
-
-const db = {
-  livros: [
-    { id: 1, titulo: 'Sherlock Holmes', autorId: 33 }
-  ],
-  autores: [
-    { id: 33, nome: 'Conan Doyle' }
-  ]
-}
 
 const typeDefs = `
   type Livro {
@@ -22,7 +15,7 @@ const typeDefs = `
   type Autor {
     id: ID!
     nome: String!
-    livros: [Livro!]!
+    livrosPublicados: [Livro!]!
   }
 
   type Query {
@@ -44,7 +37,7 @@ const resolvers = {
     }
   },
   Autor: {
-    livros: (autorAtual) => db.livros.filter(livro => livro.autorId === autorAtual.id)
+    livrosPublicados: (autorAtual) => db.livros.filter(livro => livro.autorId === autorAtual.id)
   },
   Query: {
     livros: () => db.livros,
@@ -86,4 +79,6 @@ app.use('/graphql', expressGraphql({
   graphiql: true
 }))
 
-app.listen(8080)
+app.listen(8080, () => {
+  console.log('\nListening on http://localhost:8080/graphql')
+})

@@ -41,6 +41,7 @@ app.use('/', expressGraphql({
   graphiql: true
 }))
 
-app.listen(1234, () => {
-  console.log('http://localhost:1234/')
+app.listen(8080, () => {
+  
+  console.log('\nListening on http://localhost:8080/graphql')
 })

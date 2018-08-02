@@ -1,3 +1,4 @@
+const db = require('./db')
 const express = require('express')
 const graphqlHttp = require('express-graphql')
 const app = express()
@@ -11,16 +12,6 @@ const {
   GraphQLNonNull
 } = require('graphql')
 
-const db = {
-  livros: [
-    { id: 1, titulo: 'Sherlock Holmes', autorId: 33 }
-  ],
-  autores: [
-    { id: 33, nome: 'Conan Doyle' }
-  ]
-}
-
-// Definição de tipos
 const AutorType = new GraphQLObjectType({
   name: 'Autor',
   fields: {
@@ -41,27 +32,29 @@ const LivroType = new GraphQLObjectType({
   }
 })
 
-const schema = new GraphQLSchema({
-  query: new GraphQLObjectType({
-    name: 'Query',
-    fields: {
-      autores: {
-        type: new GraphQLList(AutorType),
-        resolve: () => db.autores
+const RootQueries = new GraphQLObjectType({
+  name: 'Query',
+  fields: {
+    autores: {
+      type: new GraphQLList(AutorType),
+      resolve: () => db.autores
+    },
+    livros: {
+      type: new GraphQLList(LivroType),
+      resolve: () => db.livros
+    },
+    livroById: {
+      type: LivroType,
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLID)}
       },
-      livros: {
-        type: new GraphQLList(LivroType),
-        resolve: () => db.livros
-      },
-      livroById: {
-        type: LivroType,
-        args: {
-          id: { type: new GraphQLNonNull(GraphQLID)}
-        },
-        resolve: (p, { id }) => db.livros.find(livro => livro.id == id)
-      }
+      resolve: (p, { id }) => db.livros.find(livro => livro.id == id)
     }
-  })
+  }
+})
+
+const schema = new GraphQLSchema({
+  query: RootQueries
 })
 
 app.use(
@@ -72,4 +65,7 @@ app.use(
   })
 )
 
-app.listen(8080)
+app.listen(8080, () => {
+  
+  console.log('\nListening on http://localhost:8080/graphql')
+})
