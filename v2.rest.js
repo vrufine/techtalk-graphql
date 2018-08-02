@@ -18,6 +18,5 @@ app.get('/autores/:id', (req, res) => {
 })
 
 app.listen(9090, () => {
-  
   console.log('\nListening on http://localhost:9090/')
 })
