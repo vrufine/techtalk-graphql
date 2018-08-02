@@ -32,9 +32,7 @@ const typeDefs = `
 
 const resolvers = {
   Livro: {
-    autor: (livroAtual) => {
-      return db.autores.find(autor => autor.id === livroAtual.autorId)
-    }
+    autor: (livroAtual) => db.autores.find(autor => autor.id === livroAtual.autorId)
   },
   Autor: {
     livrosPublicados: (autorAtual) => db.livros.filter(livro => livro.autorId === autorAtual.id)
@@ -80,5 +78,5 @@ app.use('/graphql', expressGraphql({
 }))
 
 app.listen(8080, () => {
-  console.log('\nListening on http://localhost:8080/graphql')
+  console.log('\nGraphQL on http://localhost:8080/graphql')
 })
